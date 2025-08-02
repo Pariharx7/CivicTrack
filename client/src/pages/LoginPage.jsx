@@ -5,19 +5,19 @@ import { Link, useNavigate } from 'react-router-dom';
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const [userName, setUserName] = useState(''); 
+  const [userNameOrEmail, setUserNameOrEmail] = useState(''); // Could be email or username
   const [password, setPassword] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault(); // Prevent default form submission
 
     // Basic validation
-    if (!userName || !password) {
+    if (!userNameOrEmail || !password) {
       alert('Please enter your username/email and password.');
       return;
     }
 
-    console.log('Attempting login with:', { userName, password });
+    console.log('Attempting login with:', { userNameOrEmail, password });
 
     // In a real application, you would send this data to your backend API for authentication.
     // Example:
@@ -66,7 +66,7 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold text-center text-white mb-6">User Login</h2>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="userNameOrEmail" className="block text-sm font-medium text-gray-300">User Name / Email</label>
+            <label htmlFor="userNameOrEmail" className="block text-sm font-medium text-gray-300">Username</label>
             <input
               type="text"
               id="userNameOrEmail"
@@ -74,7 +74,7 @@ const LoginPage = () => {
               value={userNameOrEmail}
               onChange={(e) => setUserNameOrEmail(e.target.value)}
               className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Enter your user name or email"
+              placeholder="Enter your username"
               required
             />
           </div>

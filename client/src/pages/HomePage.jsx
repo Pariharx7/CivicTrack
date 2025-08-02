@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import HomePageHeader from '../components/HomePageHeader'; // Updated header
 import IssueCard from '../components/IssueCard'; // New issue card component
-import { FaSearch } from 'react-icons/fa'; // For search icon in the filter bar
-import { useNavigate } from 'react-router-dom'; // For navigation on search
+import Filters from '../components/Filters'; // <--- Import the new Filters component
+import { useNavigate, Link } from 'react-router-dom'; // For navigation on search
 
 const HomePage = () => {
   const navigate = useNavigate();
 
-  // States for filters and search
+  // States for filters and search (these stay in HomePage as they manage the data)
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [distanceFilter, setDistanceFilter] = useState('');
@@ -200,9 +200,6 @@ const HomePage = () => {
   };
 
   const handleSearchIssues = () => {
-    // This function can trigger a re-fetch of issues with the new search query
-    // The useEffect hook already handles this because searchQuery is a dependency.
-    // If you want to force a refresh even if query is same, you could call fetchIssues directly.
     setCurrentPage(1); // Reset to first page on new search
   };
 
@@ -212,90 +209,27 @@ const HomePage = () => {
       {/* Reusing the HomePageHeader component */}
       <HomePageHeader />
 
-      {/* Filter/Search Bar Section (from Screen 1) */}
-      <div className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 mt-4 mb-6"> {/* max-w-4xl to match the wider grid */}
-        <div className="bg-gray-700 p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-            {/* Category Dropdown */}
-            <div className="relative w-full sm:w-36">
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="block w-full bg-gray-800 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none pr-8"
-              >
-                <option value="">Category</option>
-                <option value="Roads">Roads</option>
-                <option value="Waste">Waste</option>
-                <option value="Streetlight">Streetlight</option>
-                {/* Add more categories as needed */}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z"/></svg>
-              </div>
-            </div>
-
-            {/* Status Dropdown */}
-            <div className="relative w-full sm:w-36">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="block w-full bg-gray-800 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none pr-8"
-              >
-                <option value="">Status</option>
-                <option value="Reported">Reported</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-                {/* Add more statuses */}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z"/></svg>
-              </div>
-            </div>
-
-            {/* Distance Dropdown */}
-            <div className="relative w-full sm:w-36">
-              <select
-                value={distanceFilter}
-                onChange={(e) => setDistanceFilter(e.target.value)}
-                className="block w-full bg-gray-800 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none pr-8"
-              >
-                <option value="">Distance</option>
-                <option value="1km">1 km</option>
-                <option value="5km">5 km</option>
-                <option value="10km">10 km</option>
-                {/* Add more distances */}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z"/></svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Search Issues Input and Button */}
-          <div className="flex items-center w-full sm:w-auto">
-            <input
-              type="text"
-              placeholder="Search Issues..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-gray-800 text-white rounded-l-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 w-full"
-            />
-            <button
-              onClick={handleSearchIssues}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-r-md focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center transition duration-200 ease-in-out"
-            >
-              <FaSearch className="mr-0 sm:mr-2" />
-              <span className="hidden sm:inline">Search Issues</span> {/* "Search Issues" text as per Screen 1 */}
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Use the new Filters component here */}
+      <Filters
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        distanceFilter={distanceFilter}
+        setDistanceFilter={setDistanceFilter}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearchIssues={handleSearchIssues}
+      />
 
       <main className="flex-grow w-full max-w-4xl p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {issues.length > 0 ? (
             issues.map((issue) => (
-              <IssueCard key={issue.id} issue={issue} />
+              // Wrapped IssueCard with Link to navigate to detail page
+              <Link to={`/detail/${issue.id}`} key={issue.id}>
+                <IssueCard issue={issue} />
+              </Link>
             ))
           ) : (
             <p className="text-white text-center text-lg col-span-full">No issues found matching your criteria.</p>
