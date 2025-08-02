@@ -15,9 +15,9 @@ function App() {
       <Route path="/user-home" element={<UserHomePage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/detail/:id" element={<DetailPage />} /> {/* Example for dynamic ID */}
       <Route path="/report-issue" element={<ReportIssuePage />} />
       <Route path="/search" element={<SearchResultsPage />} />
+      <Route path="/detail/:id" element={<DetailPage />} /> {/* Example for dynamic ID */}
       {/* Add more routes as per your application's flow */}
     </Routes>
   );
