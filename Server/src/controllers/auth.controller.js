@@ -121,5 +121,52 @@ return res.status(200).clearCookie("accessToken", options)
 })
 
 
+// POST /api/auth/refresh-token
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies?.refreshToken;
 
-export {registerUser, loginUser, logoutUser}
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Refresh Token missing");
+  }
+
+  try {
+    const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user || user.refreshToken !== incomingRefreshToken) {
+      throw new ApiError(401, "Invalid Refresh Token");
+    }
+
+    const newAccessToken = user.generateAccessToken();
+    const newRefreshToken = user.generateRefreshToken();
+
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    const options = {
+      httpOnly: true,
+      secure: true
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", newAccessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(new ApiResponse(200, { accessToken: newAccessToken, refreshToken: newRefreshToken }, "Token refreshed"));
+
+  } catch (error) {
+    throw new ApiError(401, "Invalid or expired refresh token");
+  }
+});
+
+
+// GET /api/auth/me
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.myUser, "Current User Fetched"));
+});
+
+
+export {registerUser, loginUser, logoutUser, refreshAccessToken, getCurrentUser}
