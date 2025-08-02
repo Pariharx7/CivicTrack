@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     phonenumber,
     password,
+    role : "user" //default
   });
 
 

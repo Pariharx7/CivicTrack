@@ -40,7 +40,6 @@ const issueSchema = new mongoose.Schema(
     ],
     required: true,
   },
-  
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
