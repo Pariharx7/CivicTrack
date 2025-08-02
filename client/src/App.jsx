@@ -8,6 +8,8 @@ import IssueDetailPage from './pages/IssueDetailPage';
 import ReportIssuePage from './pages/ReportIssuePage';
 import MyIssuesPage from './pages/MyIssuesPage';
 import IssuesListPage from './pages/IssuesListPage';
+import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -18,9 +20,10 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/report-issue" element={<ReportIssuePage />} />
       <Route path="/search" element={<IssuesListPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
       <Route path="/issue/:id" element={<IssueDetailPage />} /> {/* Example for dynamic ID */}
       <Route path="/my-issues" element={<MyIssuesPage />} />
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
+      <Route path="*" element={<NotFoundPage />} />
       {/* Add more routes as per your application's flow */}
     </Routes>
   );

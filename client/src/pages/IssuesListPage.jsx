@@ -1,9 +1,9 @@
 // src/pages/IssuesListPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom'; // Import useSearchParams
-import AppHeader from '../components/AppHeader'; // Import the new AppHeader
-import Filters from '../components/Filters'; // Import the Filters component
-import IssueCard from '../components/IssueCard'; // Import the IssueCard component
+import { useSearchParams } from 'react-router-dom';
+import GlobalNav from '../components/GlobalNav'; // <--- NEW: Import GlobalNav
+import Filters from '../components/Filters';
+import IssueCard from '../components/IssueCard';
 
 const IssuesListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -120,7 +120,6 @@ const IssuesListPage = () => {
       filteredIssues = filteredIssues.filter(issue => issue.status === currentStatus);
     }
     if (currentDistance) {
-      // Simple distance filtering logic (e.g., "1km", "5km", "10km")
       const distValue = parseFloat(currentDistance.replace('km', ''));
       filteredIssues = filteredIssues.filter(issue => parseFloat(issue.distance) <= distValue);
     }
@@ -163,11 +162,11 @@ const IssuesListPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center">
-      {/* Application Header */}
-      <AppHeader title="CivicTrack" />
+      {/* NEW: Use GlobalNav instead of AppHeader */}
+      <GlobalNav />
 
-      {/* Filters Section - matches Screen 3 */}
-      <div className="w-full max-w-4xl px-4 sm:px-0 mt-8 mb-8"> {/* Added horizontal padding for smaller screens */}
+      {/* Filters Section */}
+      <div className="w-full max-w-4xl px-4 sm:px-0 mt-8 mb-8">
         <Filters
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
@@ -182,7 +181,7 @@ const IssuesListPage = () => {
       </div>
 
       {/* Issues List */}
-      <main className="w-full max-w-4xl px-4 sm:px-0 pb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {/* Responsive grid */}
+      <main className="w-full max-w-4xl px-4 sm:px-0 pb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {issues.length > 0 ? (
           issues.map(issue => (
             <IssueCard key={issue.id} issue={issue} />
