@@ -59,36 +59,29 @@ export const createIssue = asyncHandler(async (req, res) => {
   res.status(201).json(new ApiResponse(201, issue, "Issue reported successfully"));
 });
 
+// List all issues (with optional filters)
 export const listIssues = asyncHandler(async (req, res) => {
   const { category, status, page = 1, limit = 20 } = req.query;
 
-  // Build the filter object dynamically
   let filter = {};
 
   if (category) filter.category = category.trim();
   if (status) filter.status = status.trim();
 
-  // For non-admins show only unflagged issues; admins see all
-  // if (!req.myUser || req.myUser.role !== "admin") {
-  //   filter.isFlagged = false;
-  // }
+  // Remove any isFlagged filtering—show all issues regardless
 
-  // Pagination calculations
   const perPage = parseInt(limit);
   const currentPage = parseInt(page);
   const skip = (currentPage - 1) * perPage;
 
-  // Count total matching documents for pagination info
   const total = await Issue.countDocuments(filter);
 
-  // Query with pagination and sorting
   const issues = await Issue.find(filter)
     .populate("reportedBy", "username fullname avatar")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(perPage);
 
-  // Send paginated response including metadata
   res.json(
     new ApiResponse(200, {
       issues,
@@ -98,12 +91,11 @@ export const listIssues = asyncHandler(async (req, res) => {
         currentPage,
         totalPages: Math.ceil(total / perPage),
       },
-    }, "Issues fetched successfully")
+    },"Issues fetched successfully")
   );
 });
 
-
-// List nearby issues within radius (3-5km) of user location
+// List nearby issues within radius (3-5 km) of user location
 export const listNearbyIssues = asyncHandler(async (req, res) => {
   const { lat, lng, radius } = req.query;
 
@@ -111,7 +103,7 @@ export const listNearbyIssues = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Latitude and longitude are required");
   }
 
-  const radiusMeters = radius ? parseFloat(radius) * 1000 : 3000; // default 3 km
+  const radiusMeters = radius ? parseFloat(radius) * 1000 : 3000;
 
   const issues = await Issue.find({
     location: {
@@ -120,7 +112,7 @@ export const listNearbyIssues = asyncHandler(async (req, res) => {
         $maxDistance: radiusMeters,
       },
     },
-    isFlagged: false,
+    // no isFlagged condition here
   })
     .populate("reportedBy", "username fullname avatar")
     .sort({ createdAt: -1 });
@@ -164,13 +156,13 @@ export const updateIssue = asyncHandler(async (req, res) => {
   res.json(new ApiResponse(200, issue, "Issue updated successfully"));
 });
 
-// Flag an issue as spam/inappropriate
+// Flag an issue — adjust to just increment flaggedCount without hiding
 export const flagIssue = asyncHandler(async (req, res) => {
   const issue = await Issue.findById(req.params.id);
   if (!issue) throw new ApiError(404, "Issue not found");
 
   issue.flaggedCount = (issue.flaggedCount || 0) + 1;
-  if (issue.flaggedCount >= 3) issue.isFlagged = true;
+  // Remove logic checking isFlagged since model does not have this field
 
   await issue.save();
 
