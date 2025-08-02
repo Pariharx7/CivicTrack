@@ -1,14 +1,14 @@
-// src/pages/HomePage.jsx
+// src/pages/UserHomePage.jsx
 import React, { useState, useEffect } from 'react';
-import HomePageHeader from '../components/HomePageHeader'; // Updated header
-import IssueCard from '../components/IssueCard'; // New issue card component
-import Filters from '../components/Filters'; // <--- Import the new Filters component
-import { useNavigate, Link } from 'react-router-dom'; // For navigation on search
+import UserHomePageHeader from '../components/UserHomePageHeader';
+import IssueCard from '../components/IssueCard';
+import Filters from '../components/Filters'; // <--- Import the Filters component
+import { useNavigate, Link } from 'react-router-dom';
 
-const HomePage = () => {
+const UserHomePage = () => {
   const navigate = useNavigate();
 
-  // States for filters and search (these stay in HomePage as they manage the data)
+  // States for filters and search
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [distanceFilter, setDistanceFilter] = useState('');
@@ -22,11 +22,10 @@ const HomePage = () => {
 
   useEffect(() => {
     // Simulate fetching issues based on current page and filters
+    // In a real app, you'd also include a user ID to fetch 'My issues'
     const fetchIssues = async () => {
-      // In a real app, you'd send categoryFilter, statusFilter, distanceFilter,
-      // searchQuery, currentPage to your API to get filtered and paginated results.
-
-      // Dummy data for demonstration
+      // Dummy data for demonstration. For 'My issues', you'd typically filter
+      // this data based on a logged-in user's ID.
       const allDummyIssues = [
         {
           id: 1,
@@ -153,12 +152,13 @@ const HomePage = () => {
 
       // Apply filters
       let filteredIssues = allDummyIssues.filter(issue => {
-        const matchesCategory = categoryFilter ? issue.title.toLowerCase().includes(categoryFilter.toLowerCase()) : true; // Simple contains for dummy
+        const matchesCategory = categoryFilter ? issue.title.toLowerCase().includes(categoryFilter.toLowerCase()) : true;
         const matchesStatus = statusFilter ? issue.status === statusFilter : true;
         const matchesQuery = searchQuery ? issue.title.toLowerCase().includes(searchQuery.toLowerCase()) || issue.description.toLowerCase().includes(searchQuery.toLowerCase()) : true;
-        // Distance filtering would be more complex, involving user's location and issue's coordinates
         const matchesDistance = distanceFilter ? true : true; // Placeholder for now
 
+        // For 'My issues', you would add a filter like: issue.reporterId === loggedInUserId
+        // For this dummy data, we'll just show all of them as if they were 'my issues'
         return matchesCategory && matchesStatus && matchesDistance && matchesQuery;
       });
 
@@ -180,7 +180,6 @@ const HomePage = () => {
 
   const renderPaginationButtons = () => {
     const pages = [];
-    // Show current page, and 2 pages before/after (if available)
     for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
       pages.push(
         <button
@@ -206,8 +205,8 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center">
-      {/* Reusing the HomePageHeader component */}
-      <HomePageHeader />
+      {/* User Home Page Header */}
+      <UserHomePageHeader />
 
       {/* Use the new Filters component here */}
       <Filters
@@ -261,4 +260,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default UserHomePage;

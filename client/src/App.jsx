@@ -1,21 +1,29 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
+import UserHomePage from './pages/UserHomePage'
 import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
-import DetailPage from './pages/DetailPage';
+import IssueDetailPage from './pages/IssueDetailPage';
 import ReportIssuePage from './pages/ReportIssuePage';
-import SearchResultsPage from './pages/SearchResultsPage'; // If separate page
+import MyIssuesPage from './pages/MyIssuesPage';
+import IssuesListPage from './pages/IssuesListPage';
+import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/user-home" element={<UserHomePage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/detail/:id" element={<DetailPage />} /> {/* Example for dynamic ID */}
       <Route path="/report-issue" element={<ReportIssuePage />} />
-      <Route path="/search" element={<SearchResultsPage />} />
+      <Route path="/search" element={<IssuesListPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/issue/:id" element={<IssueDetailPage />} /> {/* Example for dynamic ID */}
+      <Route path="/my-issues" element={<MyIssuesPage />} />
+      <Route path="*" element={<NotFoundPage />} />
       {/* Add more routes as per your application's flow */}
     </Routes>
   );
