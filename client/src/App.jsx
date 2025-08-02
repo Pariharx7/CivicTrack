@@ -4,7 +4,7 @@ import HomePage from './pages/HomePage';
 import UserHomePage from './pages/UserHomePage'
 import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
-import DetailPage from './pages/DetailPage';
+import IssueDetailPage from './pages/IssueDetailPage';
 import ReportIssuePage from './pages/ReportIssuePage';
 import SearchResultsPage from './pages/SearchResultsPage'; // If separate page
 
@@ -17,7 +17,8 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/report-issue" element={<ReportIssuePage />} />
       <Route path="/search" element={<SearchResultsPage />} />
-      <Route path="/detail/:id" element={<DetailPage />} /> {/* Example for dynamic ID */}
+      <Route path="/issue/:id" element={<IssueDetailPage />} /> {/* Example for dynamic ID */}
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
       {/* Add more routes as per your application's flow */}
     </Routes>
   );
