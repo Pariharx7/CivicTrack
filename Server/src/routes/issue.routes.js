@@ -21,7 +21,7 @@ router.post(
 router.get("/nearby", VerifyJWT, listNearbyIssues);
 
 // GET /api/issues/nearby
-router.get("/nearby", listIssues);
+router.get("/", listIssues);
 
 // View a single issue by ID
 router.get("/:id", VerifyJWT, getIssueDetail);

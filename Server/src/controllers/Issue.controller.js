@@ -6,16 +6,6 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import fs from "fs/promises";
 import path from "path";
 
-// Helper: delete temp files
-async function deleteTempFiles(files) {
-  for (const file of files) {
-    try {
-      await fs.unlink(path.resolve(file.path));
-    } catch (err) {
-      console.error(`Error deleting temp file ${file.path}`, err);
-    }
-  }
-}
 
 // Create a new issue with optional image upload
 export const createIssue = asyncHandler(async (req, res) => {
@@ -69,22 +59,49 @@ export const createIssue = asyncHandler(async (req, res) => {
   res.status(201).json(new ApiResponse(201, issue, "Issue reported successfully"));
 });
 
-// List all issues (with optional filters)
 export const listIssues = asyncHandler(async (req, res) => {
-  const { category, status } = req.query;
+  const { category, status, page = 1, limit = 20 } = req.query;
+
+  // Build the filter object dynamically
   let filter = {};
 
-  if (category) filter.category = category;
-  if (status) filter.status = status;
+  if (category) filter.category = category.trim();
+  if (status) filter.status = status.trim();
 
-  filter.isFlagged = false;
+  // For non-admins show only unflagged issues; admins see all
+  // if (!req.myUser || req.myUser.role !== "admin") {
+  //   filter.isFlagged = false;
+  // }
 
+  // Pagination calculations
+  const perPage = parseInt(limit);
+  const currentPage = parseInt(page);
+  const skip = (currentPage - 1) * perPage;
+
+  // Count total matching documents for pagination info
+  const total = await Issue.countDocuments(filter);
+
+  // Query with pagination and sorting
   const issues = await Issue.find(filter)
     .populate("reportedBy", "username fullname avatar")
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(perPage);
 
-  res.json(new ApiResponse(200, issues, "Issues fetched successfully"));
+  // Send paginated response including metadata
+  res.json(
+    new ApiResponse(200, {
+      issues,
+      pagination: {
+        total,
+        perPage,
+        currentPage,
+        totalPages: Math.ceil(total / perPage),
+      },
+    }, "Issues fetched successfully")
+  );
 });
+
 
 // List nearby issues within radius (3-5km) of user location
 export const listNearbyIssues = asyncHandler(async (req, res) => {
