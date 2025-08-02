@@ -29,6 +29,11 @@ import router from "./routes/auth.routes.js";
 app.use('/api/auth', router)
 
 
+import Issuerouter from "./routes/issue.routes.js";
+
+
+app.use('/api/issues', Issuerouter)
+
 
 export default app;
 
