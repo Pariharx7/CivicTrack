@@ -1,11 +1,12 @@
 // src/pages/ReportIssuePage.jsx
 import React, { useState } from 'react';
-import ReportIssueHeader from '../components/ReportIssueHeader'; 
-import { FaPlus, FaMapMarkerAlt } from 'react-icons/fa'; 
+import ReportIssueHeader from '../components/ReportIssueHeader';
+import { FaPlus, FaMapMarkerAlt } from 'react-icons/fa';
 
 const ReportIssuePage = () => {
   const [photos, setPhotos] = useState([]);
   const [category, setCategory] = useState('');
+  const [title, setTitle] = useState(''); // New state for title
   const [description, setDescription] = useState('');
   const [reportAnonymous, setReportAnonymous] = useState(false);
   const [location, setLocation] = useState('Auto-detected via GPS or manual pin-drop.'); // Placeholder for location text
@@ -24,6 +25,7 @@ const ReportIssuePage = () => {
       formData.append(`photo${index}`, photo);
     });
     formData.append('category', category);
+    formData.append('title', title); // Add title to formData
     formData.append('description', description);
     formData.append('reportAnonymous', reportAnonymous);
     formData.append('location', location); // In a real app, this would be lat/lng or a more precise address
@@ -31,6 +33,7 @@ const ReportIssuePage = () => {
     console.log('Submitting Issue:', {
       photos: photos.map(file => file.name), // Just names for console log
       category,
+      title, // Include title in console log
       description,
       reportAnonymous,
       location,
@@ -40,6 +43,7 @@ const ReportIssuePage = () => {
     // Reset form after submission (optional)
     setPhotos([]);
     setCategory('');
+    setTitle(''); // Reset title
     setDescription('');
     setReportAnonymous(false);
     alert('Issue submitted (check console for data)!');
@@ -119,25 +123,43 @@ const ReportIssuePage = () => {
             <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-2">
               Category
             </label>
-            <select
-              id="category"
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none pr-8"
-            >
-              <option value="">Select a category</option>
-              <option value="Roads">Roads & Potholes</option>
-              <option value="Waste">Waste Management</option>
-              <option value="Water">Water Supply</option>
-              <option value="Electricity">Electricity Outage</option>
-              <option value="PublicSafety">Public Safety</option>
-              <option value="Other">Other</option>
-            </select>
-            {/* Custom arrow for select, as appearance-none removes default */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z"/></svg>
+            <div className="relative"> {/* Added relative for the custom arrow positioning */}
+              <select
+                id="category"
+                name="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none pr-8"
+              >
+                <option value="">Select a category</option>
+                <option value="Roads">Roads & Potholes</option>
+                <option value="Waste">Waste Management</option>
+                <option value="Water">Water Supply</option>
+                <option value="Electricity">Electricity Outage</option>
+                <option value="PublicSafety">Public Safety</option>
+                <option value="Other">Other</option>
+              </select>
+              {/* Custom arrow for select, as appearance-none removes default */}
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z"/></svg>
+              </div>
             </div>
+          </div>
+
+          {/* New Title Input */}
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">
+              Title
+            </label>
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+              placeholder="Enter a brief title for the issue"
+            />
           </div>
 
           {/* Description Textarea */}
