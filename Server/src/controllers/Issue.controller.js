@@ -23,6 +23,7 @@ export const createIssue = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Location must contain lat and lng");
   }
 
+
   const validCategories = [
     "Roads",
     "Lighting",
@@ -43,7 +44,6 @@ export const createIssue = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Image upload failed");
       }
     }
-    await deleteTempFiles(req.files);
   }
 
   const issue = await Issue.create({
@@ -58,6 +58,18 @@ export const createIssue = asyncHandler(async (req, res) => {
 
   res.status(201).json(new ApiResponse(201, issue, "Issue reported successfully"));
 });
+
+//Get my issues
+export const getMyIssues = asyncHandler( async(req, res) =>{
+   const userId = req.myUser._id;
+  const myIssues = await Issue.find({ reportedBy: userId })
+    .populate('reportedBy', 'username fullname')
+    .sort({ createdAt: -1 });
+
+    
+  res.json(new ApiResponse(200, myIssues, "User's reported issues fetched successfully"));
+});
+
 
 // List all issues (with optional filters)
 export const listIssues = asyncHandler(async (req, res) => {

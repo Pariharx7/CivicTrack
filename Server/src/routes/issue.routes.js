@@ -1,6 +1,6 @@
 import express from "express";
 import { upload } from "../middlewares/multer.middleware.js";
-import { createIssue, listIssues, listNearbyIssues, getIssueDetail, updateIssue, flagIssue, deleteIssue } from "../controllers/Issue.controller.js";
+import { createIssue, getMyIssues, listIssues, listNearbyIssues, getIssueDetail, updateIssue, flagIssue, deleteIssue } from "../controllers/Issue.controller.js";
 import { VerifyJWT } from "../middlewares/auth.middleware.js";
 import { authorizeRoles } from "../middlewares/roles.middleware.js";
 
@@ -17,14 +17,17 @@ router.post(
 );
 
 
+// GET /api/issues/my
+router.get('/my', VerifyJWT, getMyIssues);
+
 // GET /api/issues/nearby
 router.get("/nearby", VerifyJWT, listNearbyIssues);
 
-// GET /api/issues/nearby
+// GET /api/issues/
 router.get("/", listIssues);
 
 // View a single issue by ID
-router.get("/:id", VerifyJWT, getIssueDetail);
+router.get("/:id", getIssueDetail);
 
 // Update an issue (admin only, e.g. status, admin logs)
 router.patch("/:id", VerifyJWT, authorizeRoles("admin"),  updateIssue);
